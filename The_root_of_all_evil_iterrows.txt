@@ -1,0 +1,478 @@
+0:00:04.176252
+**************
+0:00:00.024870
+
+시작
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    for _idx, _row in __df.iterrows():
+        pass
+
+추가
+
+0:00:04.159267
+**************
+0:00:01.403503
+
+0.02 -> 1.40 으로 늘어남
+df.iterrows 는 알려진대로 시간을 많이 쓴다
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    del __df['date']
+    del __df['high']
+    del __df['low']
+    del __df['close']
+    del __df['volume']
+    del __df[5]
+    del __df[10]
+    del __df['desc_ma']
+
+df에서 컬럼들 삭제
+
+0:00:04.238092
+**************
+0:00:01.428225
+
+거의 영향 없음
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    for _idx, _row in __df.iterrows():
+        pass
+
+위 코드를
+
+    open_series = __df['open'].values
+    asc_ma_series = __df['asc_ma'].values
+
+
+    for _open, _asc_ma in itertools.product(open_series, asc_ma_series):
+        pass
+
+로 교체
+
+0:00:04.203774
+**************
+0:00:09.771944
+
+9초로 늘어나는 것으로 보아 itertools.product은 속도 저하 시키는듯
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    for _open, _asc_ma in itertools.product(open_series, asc_ma_series):
+        pass
+
+를
+
+    for _open, _asc_ma in zip(open_series, asc_ma_series):
+        pass
+
+로 교체
+
+0:00:04.151228
+**************
+0:00:00.032026
+
+9초에서 0.03초로 단축
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    for _open, _asc_ma in zip(open_series, asc_ma_series):
+        pass
+
+을
+
+    _count = 0
+    for _open, _asc_ma in zip(open_series, asc_ma_series):
+        _count += 1
+
+인덱싱을 위해 수정. 
+
+0:00:04.170157
+**************
+0:00:00.035000
+
+별 영향 없는듯
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    _count = 0
+    for _open, _asc_ma in zip(open_series, asc_ma_series):
+        __open = open_series[_count]
+        __asc_ma = asc_ma_series[_count]
+
+        _count += 1
+
+각 줄마다 list에 접근해봄
+
+0:00:04.131049
+**************
+0:00:00.038019
+
+0.003초 차이면 거의 영향 없는듯
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    _count = 0
+    for _open, _asc_ma in zip(open_series, asc_ma_series):
+        __open = open_series[_count]
+        __asc_ma = asc_ma_series[_count]
+        _count += 1
+        if is_asc is False and __asc_ma is True:
+            asc_start_value = __open
+            asc_start_idx = _count
+            is_asc = True
+            continue
+
+MA 시작 지점 코드 추가
+계산을 위해서 값들을 변수에 저장 기능 추가
+
+
+0:00:04.235519
+**************
+0:00:00.040000
+
+변수에 값을 넣는 것은 거의 영향이 없는 듯 하다
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    _count = 0
+    for _open, _asc_ma in zip(open_series, asc_ma_series):
+        __open = open_series[_count]
+        __asc_ma = asc_ma_series[_count]
+        _count += 1
+        if is_asc is False and __asc_ma is True:
+            asc_start_value = __open
+            asc_start_idx = _count
+            is_asc = True
+            continue
+
+        if is_asc is True and is_asc is False:
+            asc_end_value = __open
+            result_value = asc_end_value - asc_start_value
+
+            asc_start_value = 0.0
+            asc_start_idx = 0
+            is_asc = False
+            continue
+        pass
+
+    pass
+
+MA 종료 지점 코드 추가
+
+0:00:04.243415
+**************
+0:00:00.040000
+
+여전히 소요시간은 늘어나지 않고 있다.
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    _count = 0
+    _trade_result_dict = dict()
+    for _open, _asc_ma in zip(open_series, asc_ma_series):
+        __open = open_series[_count]
+        __asc_ma = asc_ma_series[_count]
+
+        if is_asc is False and __asc_ma is True:
+            asc_start_value = __open
+            asc_start_idx = _count
+            is_asc = True
+            _count += 1
+            continue
+
+        if is_asc is True and is_asc is False:
+            asc_end_value = __open
+            result_value = asc_end_value - asc_start_value
+            _trade_result_dict[_count] = _count
+
+            asc_start_value = 0.0
+            asc_start_idx = 0
+            is_asc = False
+            _count += 1
+            continue
+
+        _count += 1
+        pass
+
+트레이드 종료에 따른 결과 값을 저장할 dict를 생성
+key로는 _count로 idx를 지정하고 value는 트레이드 결과값을 넣는다
+
+_count가 증가되는 지점 수정
+
+0:00:04.223378
+**************
+0:00:00.041000
+
+여전히 시간은 늘어나지 않음
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+            result_value = result_value / _point
+            result_value = ((_tick_value / _last_tick['bid']) * (1000 * result_value))
+
+기존 코드에서 위 코드를 주석 처리 함
+위 코드는 point 기준의 값을 USD 값으로 계산하는 부분임
+
+0:00:04.167859
+**************
+0:00:00.085798
+
+역시 시간 변동은 크게 없음
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    # __df.loc[:, 'desc_result'] = [0.0] * len(__df)
+    #
+    # for _idx, _row in __df.iterrows():
+    #     if is_asc is False and _row['desc_ma'] is True:
+    #         asc_start_value = _row['open']
+    #         asc_start_idx = _idx
+    #         is_asc = True
+    #         continue
+    #
+    #     if is_asc is True and _row['desc_ma'] is False:
+    #         asc_end_value = _row['open']
+    #         asc_end_idx = _idx
+    #
+    #         result_value = asc_start_value - asc_end_value
+    #         # result_value = result_value / _point
+    #         # result_value = ((_tick_value / _last_tick['bid']) * (1000 * result_value))
+    #
+    #         __df.loc[_idx, 'desc_result'] = result_value
+    #
+    #         asc_start_value = 0.0
+    #         asc_start_idx = 0
+    #         is_asc = False
+    #         continue
+
+새 함수에서 역배열 계산을 하지 않고 있으므로 기존 함수에서도 역배열 계산 하는 부분 주석 처리 함
+
+0:00:02.083477
+**************
+0:00:00.086992
+
+기존 함수 소요시간이 계산량이 절반으로 줄어듬에 따라 절반 가량으로 줄어듬
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+    _count = 0
+    _trade_result_dict = dict()
+    for _open, _asc_ma in zip(open_series, asc_ma_series):
+        __open = open_series[_count]
+        __asc_ma = asc_ma_series[_count]
+
+        if is_asc == False and __asc_ma == True:
+            asc_start_value = __open
+            is_asc = True
+            _count += 1
+            continue
+
+        if is_asc == True and __asc_ma == False:
+            asc_end_value = __open
+            result_value = asc_end_value - asc_start_value
+            _trade_result_dict[timestamp_series[_count]] = result_value
+
+            asc_start_value = 0.0
+            is_asc = False
+            _count += 1
+            continue
+
+        _count += 1
+        pass
+
+
+_trade_result_dict의 key를 기존 _count에서 timestamp 값으로 변경
+주석 및 필요없는 코드 삭제
+
+0:00:02.105011
+**************
+0:00:00.088999
+
+변동 없음
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    __df = pd.DataFrame({
+        'timestamp': _trade_result_dict.keys(),
+        'asc_result': _trade_result_dict.values(),
+    })
+
+for문 종료 이후에 만들어진 결과값이 든 dict로 df를 만들었다
+
+0:00:02.130355
+**************
+0:00:00.096010
+
+아주 조금 늘어났다
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    __df['datetime'] = pd.to_datetime(list(_trade_result_dict.keys()), unit='s')
+    __df.set_index('datetime', inplace=True)
+
+timestamp를 datetime으로 변환하고 index를 걸어주었다
+
+0:00:02.092516
+**************
+0:00:00.108179
+
+0.01초 늘어났다
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+desc_ma_series = __df['desc_ma'].values
+
+
+    _count = 0
+    desc_start_value = 0.0
+    is_desc = False
+    _desc_trade_result_dict = dict()
+    for _open, _desc_ma in zip(open_series, desc_ma_series):
+        __open = open_series[_count]
+        __desc_ma = desc_ma_series[_count]
+
+        if is_desc == False and __desc_ma == True:
+            desc_start_value = __open
+            is_desc = True
+            _count += 1
+            continue
+
+        if is_desc == True and __desc_ma == False:
+            desc_end_value = __open
+            result_value = desc_end_value - desc_start_value
+            _desc_trade_result_dict[timestamp_series[_count]] = result_value
+
+            desc_start_value = 0.0
+            is_desc = False
+            _count += 1
+            continue
+
+        _count += 1
+        pass
+
+
+    __desc_df = pd.DataFrame({
+        'datetime': _desc_trade_result_dict.keys(),
+        'desc_result': _desc_trade_result_dict.values(),
+    })
+    __desc_df['datetime'] = pd.to_datetime(list(_desc_trade_result_dict.keys()))
+    __desc_df.set_index('datetime', inplace=True)
+
+역배열 계산 코드 추가
+
+0:00:04.148101
+**************
+0:00:00.149999
+
+0.04초 증가
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+    __df = __asc_df.merge(__desc_df, how='outer', left_index=True, right_index=True)
+    __df = __df.fillna(0.0)
+
+합치고 na 값 0으로 채움
+
+0:00:04.249007
+**************
+0:00:00.152646
+
+변화 거의 없음
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+    __asc_df = pd.DataFrame({
+        'datetime': _asc_trade_result_dict.keys(),
+        'asc_result': _asc_trade_result_dict.values(),
+    })
+    __asc_df['datetime'] = pd.to_datetime(list(_asc_trade_result_dict.keys()))
+    __asc_df.set_index('datetime', inplace=True)
+
+    __desc_df = pd.DataFrame({
+        'datetime': _desc_trade_result_dict.keys(),
+        'desc_result': _desc_trade_result_dict.values(),
+    })
+    __desc_df['datetime'] = pd.to_datetime(list(_desc_trade_result_dict.keys()))
+    __desc_df.set_index('datetime', inplace=True)
+
+    __df = __asc_df.merge(__desc_df, how='outer', left_index=True, right_index=True)
+    __df = __df.fillna(0.0)
+
+    __df.loc[:, 'asc_result'] = ((_tick_value / _last_tick['bid']) * (1000 * __df['asc_result'] / _point))
+    __df.loc[:, 'desc_result'] = ((_tick_value / _last_tick['bid']) * (1000 * __df['desc_result'] / _point))
+
+정배열, 역배열의 df를 만드는 코드 추가
+
+0:00:04.207548
+**************
+0:00:00.163001
+
+0.01초 정도 추가 됨
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+0:00:05.696534
+**************
+0:00:00.950446
+함수 5회 실행 소요시간
+5.69초 -> 0.95초 
+1/5단축
+
+
+튜닝 전 ray
+[repeated 84x across cluster]
+[repeated 84x across cluster]
+[repeated 84x across cluster]
+[repeated 84x across cluster]
+[repeated 84x across cluster]
+[repeated 84x across cluster]
+[repeated 70x across cluster]
+[repeated 84x across cluster]
+[repeated 80x across cluster]
+[repeated 73x across cluster]
+소요시간 59초
+
+
+
+튜닝 후 ray
+[repeated 403x across cluster]
+[repeated 398x across cluster]
+[repeated 10x across cluster]
+소요시간 20초
+
+
+통화쌍 1개 백테스트 및 이평선 조합별 밸런스 그래프 생성 속도 59초 -> 20초
+1/3 단축
