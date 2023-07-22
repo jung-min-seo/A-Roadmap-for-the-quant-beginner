@@ -56,4 +56,10 @@
 ## 추천 블로그
   * [그대안의 작은호수](https://smallake.kr/) : 한국어로 수준 높은 퀀트에 대한 글을 접할 수 있는 귀한 블로그.
 
+## 추천 유튜브
+  * [Algo Trading for a Living - Darwinex](https://youtube.com/playlist?list=PLv-cA-4O3y96b0gk8x3yPbqVM2gqafZAw)
+  * [TheTransparentTrader](https://www.youtube.com/@TheTransparentTrader)
+  * [CodingJesus](https://www.youtube.com/@CodingJesus)
+  * [DimitriBianco](https://www.youtube.com/@DimitriBianco)
+
 Copyright 2023. by Jungmin Seo. All rights reserved.
