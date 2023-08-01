@@ -59,6 +59,8 @@
 
 ## 추천 블로그
   * [그대안의 작은호수](https://smallake.kr/) : 한국어로 수준 높은 퀀트에 대한 글을 접할 수 있는 귀한 블로그.
+  * [Rule Based Trading](https://blog.naver.com/PostList.naver?blogId=chartist) : '주식 시장을 이긴 전략들'의 저자분의 블로그. 많은 전략을 볼 수 있다.
+  * [systrader79의 왕초보를 위한 주식 투자](https://stock79.tistory.com/) : 오랫동안 쌓인 좋은 전략과 인사이트 얻을만한 글을 볼 수 있다.
 
 ## 추천 유튜브
   * [Algo Trading for a Living - Darwinex](https://youtube.com/playlist?list=PLv-cA-4O3y96b0gk8x3yPbqVM2gqafZAw)
