@@ -75,6 +75,4 @@
   * [CodingJesus](https://www.youtube.com/@CodingJesus)
   * [DimitriBianco](https://www.youtube.com/@DimitriBianco)
 
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fjung-min-seo%2FA-Roadmap-for-the-quant-beginner&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
-
-Copyright 2023-2024. by Jungmin Seo. All rights reserved.
+Copyright 2023-2025. by Jungmin Seo. All rights reserved.
